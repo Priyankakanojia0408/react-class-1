@@ -1,0 +1,12 @@
+.Project{
+    text-align: center;
+    margin-top: 50px;
+    font-family: 'Arial', sans-serif;
+    background-color: aqua;
+}
+
+.image{
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+}
