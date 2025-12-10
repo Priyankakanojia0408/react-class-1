@@ -10,6 +10,7 @@ import anothergrid from "../assets/red yellow grid.png";
 function Portfolio() {
     const [selectedProject, setSelectedProject] = useState(null);
     const [search, setSearch] = useState("");
+    const [selectedTags, setSelectedTags]= useState([]);
 
 // Define projects data array
 const projects = [
@@ -54,21 +55,46 @@ const projects = [
   },
 ];
 
-    
+    // Filter projects based on search input and selected tags
     const filteredProjects = projects.filter((project) => {
       const searchText = search.toLowerCase();
 
-      const numberMatch = project.no.toLowerCase().includes(searchText);
+      const numberMatch = project.no.toString().includes(searchText);
 
       const nameMatch = project.title.toLowerCase().includes(searchText);
 
       const techMatch = project.tech.toLowerCase().includes(searchText);
 
-      const noteMatch = project.description.toLowerCase().includes(searchText);
+      const descMatch = project.description.toLowerCase().includes(searchText);
 
-      return numberMatch || nameMatch || techMatch || noteMatch;
+      //filter based on selected tags
+      const tagMatch = selectedTags.length === 0 || selectedTags.every(tag => project.tech.toLowerCase().includes(tag.toLowerCase()));
+
+      return (numberMatch || nameMatch || techMatch || descMatch) && tagMatch;
     });
            
+
+    //Handle tag selection
+    const handleTagClick = (tag) => {
+      setSelectedTags((prevTags) => {
+      if (selectedTags.includes(tag)) {
+        return prevTags.filter((t) => t !== tag);
+      } else {
+        return [...prevTags, tag];
+      }
+    });
+  };
+
+  //Handle search suggestions(filter based on title and description
+  const searchSuggestions = projects
+    .filter((project) => {
+      const searchText = search.toLowerCase();
+      return (
+        project.title.toLowerCase().includes(searchText) ||
+        project.description.toLowerCase().includes(searchText)
+      );
+    })
+    .map((project) => project.title);
 
   return (
     <div className="portfolio-container">
@@ -76,10 +102,41 @@ const projects = [
 
           <input 
         
-        type="text" placeholder="Seach projects..." value={search} onChange={(e) => setSearch(e.target.value)}
+        type="text" 
+        placeholder="Seach projects..." 
+        value={search} 
+        onChange={(e) => setSearch(e.target.value)}
         style={{
-          padding: "10px", width: "50%", marginBottom: "20px", fontSize: "16px"
-        }}/>
+          padding: "10px", 
+          width: "50%", 
+          marginBottom: "20px", 
+          fontSize: "16px"
+        }}
+        />
+
+        
+      {/* Search Suggestions */}
+      {search && (
+        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+          {searchSuggestions.map((suggestion, index) => (
+            <li key={index} style={{ cursor: "pointer", padding: "5px", backgroundColor: "#f1f1f1", marginBottom: "5px" }}>
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Tag-based Filtering */}
+      <div>
+        <button onClick={() => handleTagClick("HTML")}>HTML</button>
+        <button onClick={() => handleTagClick("CSS")}>CSS</button>
+        <button onClick={() => handleTagClick("JavaScript")}>JavaScript</button>
+        <button onClick={() => handleTagClick("React")}>React</button>
+        <button onClick={() => handleTagClick("Node.js")}>Node.js</button>
+
+      </div>
+
+
 
         <div>
         {filteredProjects.map((project, i) => (
@@ -95,9 +152,10 @@ const projects = [
     
 
       {/* Popup for selected project */}
-        <Popup project={selectedProject} onClose={() => setSelectedProject(null)} // Close popup when clicking the overlay or close button
+        <Popup 
+        project={selectedProject} 
+        onClose={() => setSelectedProject(null)} // Close popup when clicking the overlay or close button
         />
-      )
     </div>
   );
 }
