@@ -77,7 +77,7 @@ const projects = [
     //Handle tag selection
     const handleTagClick = (tag) => {
       setSelectedTags((prevTags) => {
-      if (selectedTags.includes(tag)) {
+      if (prevTags.includes(tag)) {
         return prevTags.filter((t) => t !== tag);
       } else {
         return [...prevTags, tag];
@@ -119,7 +119,16 @@ const projects = [
       {search && (
         <ul style={{ listStyle: "none", paddingLeft: 0 }}>
           {searchSuggestions.map((suggestion, index) => (
-            <li key={index} style={{ cursor: "pointer", padding: "5px", backgroundColor: "#f1f1f1", marginBottom: "5px" }}>
+            <li 
+            key={index} 
+            onClick={() => setSearch(suggestion)}
+            style={{ 
+              cursor: "pointer", 
+              padding: "5px", 
+              backgroundColor: "#f1f1f1", 
+              marginBottom: "5px" 
+              }}
+              >
               {suggestion}
             </li>
           ))}
@@ -128,13 +137,24 @@ const projects = [
 
       {/* Tag-based Filtering */}
       <div>
-        <button onClick={() => handleTagClick("HTML")}>HTML</button>
-        <button onClick={() => handleTagClick("CSS")}>CSS</button>
-        <button onClick={() => handleTagClick("JavaScript")}>JavaScript</button>
-        <button onClick={() => handleTagClick("React")}>React</button>
-        <button onClick={() => handleTagClick("Node.js")}>Node.js</button>
-
+      {["HTML", "CSS", "JavaScript", "React", "Node.js"].map(tag => (
+        <button
+          key={tag}
+          onClick={() => handleTagClick(tag)}
+          style={{
+            backgroundColor: selectedTags.includes(tag) ? "#333" : "#eee",
+            color: selectedTags.includes(tag) ? "white" : "black",
+            margin: "5px",
+            padding: "8px",
+            borderRadius: "5px",
+            cursor: "pointer"
+          }}
+        >
+          {tag}
+        </button>
+      ))}
       </div>
+
 
 
 
